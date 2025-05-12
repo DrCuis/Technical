@@ -3,7 +3,7 @@
 
 Cuis uses a Layout strategy which is different from many Smalltalks.  It is fairly simple to use once one understands the basics.
 
-LayoutMorph's arrange submorphs as either a horizontal Row or a vertical Column.
+LayoutMorphs arrange submorphs as either a horizontal Row or a vertical Column.
 
 Along this Major or Layout Axis, submorphs may be attracted toward one side (0.0) or the other (1.0) or anywhere in between.  This is the LayoutMorph's axisEdgeWeight.
 
@@ -19,7 +19,7 @@ A LayoutMorph does its job by setting the morphPosition and morphExtent of its d
 
 Each submorph of a LayoutMorph may have an optional LayoutSpec which the submorph uses to indicate how it wants to be arranged.
 
-Options include treating Morph's width and height as fixed or proportional to the LayoutMorph's extent.
+Options include treating a Morph's width and height as fixed or proportional to the LayoutMorph's extent.
 
 A LayoutSpec may also indicate a weighting perpendicular to the Layout Axis.   This is the LayoutSpec's offAxisEdgeWeight.
 
@@ -56,11 +56,11 @@ OK. Let us change the axisEdgeWeight to 0.5 to center the submorphs on the Row a
 To calculate where to place Morphs on the row, we have several things to do.
 
 - [1] First, the LayoutMorph width must contain the minimum widths of its submorphs along with their separation.
-- [2] Two cases for the sum of the proporional widths:
+- [2] Two cases for the sum of the proportional widths:
 -  [a] If the sum is >= 1 (over 100%), we will have no extra space and must scale that space so that the proportions go as requested.
--  [b] If the sum is < 1 (under 100%), we hand out space in proportion to the requests and have a bit left over.  In this case, we multiply the left-over width by the axisEdgeWeight and add the x separation to find the left edge of the first morph.
+-  [b] If the sum is < 1 (under 100%), we hand out space in proportion to the requests and have a bit left over.  In this case, we multiply the leftover width by the axisEdgeWeight and add the x separation to find the left edge of the first morph.
 
-In our example, the left-over space is multiplied by 0.5 to give half the left-over space before the first submorph to center the Row.  Again, this is after the first separation.
+In our example, the leftover space is multiplied by 0.5 to give half the leftover space before the first submorph to center the Row.  Again, this is after the first separation.
 
 ![Separation + half left-over space](LayoutPix/Layout-E1+offset2axisCenter.png)
 
@@ -92,7 +92,7 @@ The LayoutSpec can specify (x and y independent):
 - [C] Have a Width/Height proportional to the amount of otherwise unused/unoccupied layout space
 [proportionalW/H 0..1, fixedW/H nil (=> 0) or a number].
 
-Note that a LayoutMorph overrides method minimumExtent to calculate the combined minimum layout extents of its direct submorphs.
+Note that a LayoutMorph overrides the method minimumExtent to calculate the combined minimum layout extents of its direct submorphs.
 
 The basic job for a LayoutMorph is to lay out its submorphs along an axis and assign each a morphPosition and a morphExtent.
 
@@ -102,35 +102,35 @@ First, a LayoutMorph has not only a morphExtent, but also a layoutBounds.  This 
 
 Second, to fit submorphs must actually fit!  So the next bit of business is to separately sum up the minimum or fixed widths and heights of submorphs along with the morph Separation, and make sure the containing LayoutMorph's morphExtent is large enough to hold the minimums.
 
-Third, if there is extra room in either direction above the minimum, it may be put to use by proportionally based on layoutSpec's.  Note that for the major layout axis, the desired proportions my add up to over 100% of space, which requires scaling.  More on this below.  For now, we will just note that for off axis calculations, there is only a single morph, so its propostional desire can be used directly.
+Third, if there is extra room in either direction above the minimum, it may be put to use proportionally based on layoutSpec's.  Note that for the major layout axis, the desired proportions may add up to over 100% of space, which requires scaling.  More on this below.  For now, we will just note that for off-axis calculations, there is only a single morph, so its proportional desire can be used directly.
 
 So, take the off-axis amount left over.  Let's assume a Row morph with a proportional height layout submorph in this example.  This "extra" height times the proportion (0..1) gives the desired height the morph wants.  The desired height must be at least the required height.  Take the max.
 
 OK, there may still be unused height left over.  This is where the offAxisEdgeWeight comes in.
 
-To find out the top Y position of the submorph, Start with the layoutBounds Y, add the separation, and multiply the left-over by the offAxisEdgeWeight to shift the submorph down as required (0->top .. 1->bottom).
+To find out the top Y position of the submorph, Start with the layoutBounds Y, add the separation, and multiply the leftover by the offAxisEdgeWeight to shift the submorph down as required (0->top .. 1->bottom).
 
 The actual height of the morph we calculated above, so now we have the off-axis calculations of top Y and height.
 
 So much for the easy part.
 
-The more interesting part has has to do with calculations along the the layout axis.
+The more interesting part has to do with calculations along the layout axis.
 
 For the most part, we just sum submorph measures along the layout axis.
 
 There are two easy cases, so let's note those first.
 
-- [1] No proportional submorph widths.  Just fixed calculations.  First X is layoutBounds X plus X Separation plus axisEdgeWeight times left-over.  Each width fixed.  Next X is first X plus Width plus X Separation, and so on for each submorph.
+- [1] No proportional submorph widths.  Just fixed calculations.  First X is layoutBounds X plus X Separation plus axisEdgeWeight times leftover.  Each width fixed.  Next X is first X plus Width plus X Separation, and so on for each submorph.
 
 - [2] Proportional widths, but after distributing proportionally, each width is greater than the minimum width.  Basically the same as case [1].
 
-- [3] Proportional widths but one or more are less than the minimum required.  This means that we are lacking and must take some proportionally from each proportion.  But of course this changes the amount available to allocate.  But then we still could be over.  Hmm..  Sounds like an iterative approximation algorithm.  Can we do better?
+- [3] Proportional widths but one or more are less than the minimum required.  This means that we are lacking and must take some proportionally from each proportion.  But of course this changes the amount available to allocate.  But then we still could be over.  Hmm...  Sounds like an iterative approximation algorithm.  Can we do better?
 
-For harder case [3], how good is good enough?  How about a good first approimation?
+For harder case [3], how good is good enough?  How about a good first approximation?
 
-The observation is that all submorphs fit and there is no left-over after proportioning. Also, there is a balance point above which the minimum width/height is satisfied by proportional layout. ```alloc * proportion * factor = min``` implies ```allocBalance = min / (proportion * factor)```.  If we take the max of the allocBalance over the proportional morphs, this gives the smallest width/height allocation where things fit.  If we then measure the proportions at this point, we can use ```min{Height/Width} + (toAlloc * thisProp)``` below the allocation balance point and the desired proportions above the balance point.
+The observation is that all submorphs fit, and there is no leftover after proportioning. Also, there is a balance point above which the minimum width/height is satisfied by proportional layout. ```alloc * proportion * factor = min``` implies ```allocBalance = min / (proportion * factor)```.  If we take the max of the allocBalance over the proportional morphs, this gives the smallest width/height allocation where things fit.  If we then measure the proportions at this point, we can use ```min{Height/Width} + (toAlloc * thisProp)``` below the allocation balance point and the desired proportions above the balance point.
 
 Details matter.
 
-With so many width/height/extent variants, it is easy to become confused.  The basic strategy is that for a LayoutSpec, there is a  minimumSpec{Height/Width/Extent}.  For a Morph, there is a minimumExtent.  ```Morph>>minimumExtent``` is the method to override for special behavior.  The Morph methods which combine information from a Morph and its LayoutSpec are minimumLayout{Width/Height/Extent}.  These methods honor information from both the Morph>>minimumExtent and the optional LayoutSpec.
+With so many width/height/extent variants, it is easy to become confused.  The basic strategy is that for a LayoutSpec, there is a minimumSpec{Height/Width/Extent}.  For a Morph, there is a minimumExtent.  ```Morph>>minimumExtent``` is the method to override for special behavior.  The Morph methods which combine information from a Morph and its LayoutSpec are minimumLayout{Width/Height/Extent}.  These methods honor information from both the Morph>>minimumExtent and the optional LayoutSpec.
 
