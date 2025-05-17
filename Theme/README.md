@@ -9,18 +9,18 @@ Workspace:
 DarkTheme beCurrent
 ```
 
-To observer the result on a particular window, it needs to be closed
+To observe the result on a particular window, it needs to be closed
 and opened again. 
 
 **Hints.** On a Browser window, just click with the right mouse button
-the **browse** button. This replace the current browser with a new
-Browser with the same contents and extent.
+the **browse** button. This replace the current Browser with a new one
+with identical contents and extent.
 
-![The dark theme](DarkTheme.png)
+<img src="DarkTheme.png" alt="The dark theme" width="50%"/>
 
 Let's say you like the dark theme but you want to remove this blur
-effect on the button, and remove the arrow buttons in the
-scrollbar. Your create your own class `MyDarkTheme` from `DarkTheme`:
+effect on the button, then remove the arrow buttons too in the
+scrollbar. You create your own class `MyDarkTheme` from `DarkTheme`:
 
 ```smalltalk
 DarkTheme subclass: #MyDarkTheme
@@ -49,7 +49,10 @@ windowLabel
 	^ `Color white muchDarker`
 ```
 
-![My dark theme](myDarkTheme.png)
+<img src="myDarkTheme.png" alt="My dark theme" width="50%"/>
+
+
+There are many methods to look at in the `Theme` class.
 
 To learn from what people are doing with themes, you can install a
 package with a bank of themes from the World menu **World
