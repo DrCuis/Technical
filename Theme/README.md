@@ -1,4 +1,5 @@
 # How-to create a custom theme
+*By Hilaire Fernandes*
 
 Cuis comes with a hierarchy of `Theme` classes. In the stock Smalltalk
 image there are the `BrightColorTheme`, the default one, and the
