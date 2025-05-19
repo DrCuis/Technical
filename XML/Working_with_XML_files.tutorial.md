@@ -108,6 +108,16 @@ Note: The Webclient package also requires the loading of the 'Sound' package.
 
 Source: https://wiki.squeak.org/squeak/1559
 
+### Equivalent of Pharo XMLDOMParser parseURL:
+
+The equivalent of #parseURL: for the example given on the Pharo version of YAXO.
+https://github.com/pharo-contributions/XML-XMLParser
+
+```
+(XMLDOMParser  parseDocumentFrom:  (WebClient httpGet: 'https://www.w3schools.com/xml/simple.xml') content readStream) explore
+```
+The porting effort of code using the Pharo version of YAXO is minimal.
+
 ## Exercise: explore DrGeo XML reading and writing code
 
 ### Steps
