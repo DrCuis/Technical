@@ -7,6 +7,8 @@ When documenting a process with different steps there is a need to create a sequ
 
 File in the code below. It creates a button on the topleft corner of the screen.
 
+If you save this as a file, you can select it in the FileList and right-click->"workspace with contents" 
+
 ````
 "Small, invisible area acts as button
  to save consecutive screenshots"
