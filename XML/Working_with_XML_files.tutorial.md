@@ -86,3 +86,81 @@ xmlString :=
 
 XMLDOMParser  parseDocumentFrom: xmlString readStream
 ````
+
+
+## Exercise: explore DrGeo XML reading and writing code
+
+### Steps
+- Download current DrGeo
+- Choose Desktop menu -> Tools -> SystemBrowser
+- Search for class #XMLElement
+- Have a look at the instance creation method of XMLElement (class side)
+- Click on method named: aString attributes: attributeList
+- Go for senders of it.
+
+### The code
+````
+XMLNodeWithElements subclass: #XMLElement
+	instanceVariableNames: 'name contents attributes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'YAXO'
+````
+
+You will find for example how an XMLElement is constructed to write out a rectangle as SVG
+
+````
+DrGSvgCanvas
+rectangle: rect
+	| rectNode |
+	rectNode := XMLElement 
+		named: #rect 
+		attributes: {
+			#x -> rect topLeft x asString . #y -> rect topLeft y asString .
+			#width -> rect width asString . #height -> rect height asString } asDictionary.
+	^ rectNode
+````
+
+And then this #rectangle: method is called by DrGSvgCanvas #fillRectangle:color:
+
+````
+fillRectangle: rect color: fillColor
+	| rectNode |
+	rectNode := self rectangle: rect.
+	self styleOf: rectNode StrokeWidth: nil color: nil fillColor: fillColor.
+	svgTree addElement: rectNode
+````
+
+More attributes are filled in for example, see
+
+DrSvgCanvas
+
+````
+styleOf: element StrokeWidth: strokeWidth color: strokeColor strokeDashArray: sda strokeDashArrayOffset: sdao fillColor: fillColor
+"
+	Apply style to a given element (node) 
+"
+	strokeWidth ifNotNil: [element attributeAt: #'stroke-width' put: strokeWidth asString].
+	strokeColor ifNotNil: [		element attributeAt: #stroke put: 
+		(strokeColor isTransparent ifTrue: ['transparent'] ifFalse:		strokeColor hexHtml)].
+	sda ifNotNil: [
+		element 
+			attributeAt: #'stroke-dasharray' 
+			put: (String streamContents: [:s | sda do: [:e | s store: e] separatedBy: [ s space]])].
+	sdao ifNotNil: [element attributeAt: #'stroke-dashoffset' put: sdao asString].
+	fillColor 
+		ifNotNil: [
+			element attributeAt: #fill put: fillColor hexHtml.
+			fillColor isOpaque ifFalse: [element attributeAt: #'fill-opacity' put: fillColor alpha asString] ]
+		ifNil: [element attributeAt: #fill put: 'none']
+
+````
+
+
+pathNode := XMLElement named: #path.
+
+Explore classes:
+
+- DrGeoXML
+- DrGSvgCanvas
+
