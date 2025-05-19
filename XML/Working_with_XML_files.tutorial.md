@@ -35,12 +35,14 @@ stream close.
 
 ## Reading a XML file
 
+### Reading 'MyXML.xml'
 Reading back the file written above
 
 ````
 XMLDOMParser  parseDocumentFrom: 'MyXml.xml' asFileEntry readStream
 ````
 
+### Readig MusicXML hello world file
 Reading a more complex example taken from the MusicXML website
 https://www.w3.org/2021/06/musicxml40/tutorial/hello-world/
 
@@ -87,6 +89,24 @@ xmlString :=
 XMLDOMParser  parseDocumentFrom: xmlString readStream
 ````
 
+### Reading a MusicXML file and extracting the notes
+````
+Feature require: 'YAXO'.
+Feature require: 'Webclient'.
+
+xmlString := (WebClient httpGet: 'https://raw.githubusercontent.com/DrCuis/Workbench/refs/heads/main/XML/FrereJacques.xml') content.
+
+xmlDocument :=  XMLDOMParser  parseDocumentFrom: xmlString readStream.
+
+noteElements := OrderedCollection new.
+xmlDocument topElement tagsNamed: #note do: [:e | noteElements add: e].
+
+"Show the notes"
+noteElements explore.
+````
+Note: The Webclient package also requires the loading of the 'Sound' package.
+
+Source: https://wiki.squeak.org/squeak/1559
 
 ## Exercise: explore DrGeo XML reading and writing code
 
