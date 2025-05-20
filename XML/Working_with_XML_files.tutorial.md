@@ -103,8 +103,20 @@ xmlDocument topElement tagsNamed: #note do: [:e | noteElements add: e].
 
 "Show the notes"
 noteElements explore.
+
+"Convert to Squeak sound notation format (Draft as the duration is not yet considered)"
+
+noteSeq := OrderedCollection new.
+noteElements do: [:noteElem | |pitchElement noteName octave| pitchElement := noteElem firstTagNamed: #pitch.
+	noteName := (pitchElement firstTagNamed: #step) elementsAndContents first string asLowercase.
+	octave := (pitchElement firstTagNamed: #octave) elementsAndContents first string.
+       noteName := noteName, octave.
+	noteSeq add: (Array with: noteName asSymbol with: 1 with: 500).  "Draft need to read the values not just giving defaults; need to find out how to map to the Squeak Sound sequence definition"
+].
+noteSeq asArray explore.
+(AbstractSound noteSequenceOn: PluckedSound default from: noteSeq asArray) play
 ````
-Note: The Webclient package also requires the loading of the 'Sound' package.
+Note: The Webclient package also requires the loading of the 'Sound' package. So it is possible to play the tune. ToDo: Fix the mapping of the duration.
 
 Source: https://wiki.squeak.org/squeak/1559
 
