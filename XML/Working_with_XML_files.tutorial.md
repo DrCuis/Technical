@@ -2,6 +2,38 @@ This file will contain a tutorial where in a explorative way working with XML fi
 
 hhzl
 
+## What is XML?
+
+XML = Extensible Markup Language
+
+The main purpose of XML is [serialization](https://en.wikipedia.org/wiki/Serialization), i.e. storing, transmitting, and reconstructing arbitrary data ([Source](https://en.wikipedia.org/wiki/XML#Overview)).
+
+Specification
+https://www.w3.org/TR/REC-xml/
+
+Tutorial
+https://www.w3schools.com/xml/xml_whatis.asp
+
+````
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<note>
+  <to>Tove</to>
+  <from>Jani</from>
+  <heading>Reminder</heading>
+  <body>Don't forget me this weekend!</body>
+</note>
+````
+
+The XML above is quite self-descriptive:
+
+- It has sender information
+- It has receiver information
+- It has a heading
+- It has a message body
+
+The XML above does not DO anything. XML is just information wrapped in tags.
+
+
 ## Installation
 ````
 Feature require: 'YAXO'. 
@@ -9,17 +41,26 @@ Feature require: 'YAXO'.
 
 This YAXO package is included in the basic repository of Cuis Smalltalk. The code included is similar to the one in Squeak and Pharo Smalltalk as it goes back to the same original implementation.
 
+## Origin of the YAXO parser used in Cuis
+YAXO was first introduced in Squeak 3.3. 
+https://wiki.squeak.org/squeak/2256
+4744YAXO – Duane Maxwell, Andres Valloud, Michael Rueger – 25 January 2002
+YAX is yet another XML parser. This version is an effort to further integrate the original yax version with the Exobox implementation. 
+Since then it has been maintained in Squeak, Pharo and Cuis. The implementations are fairly similar.
+
+There are two types of parsers: SAX and XML DOM
+https://wiki.squeak.org/squeak/505
+This document focuses on the XML DOM parser. It reads the whole document into  into the memory.
+
+
 ## Writing a XML file
 source: https://wiki.squeak.org/squeak/6338
 adapted for Cuis, in particular the idiom
 `stream := 'MyXml.xml' asFileEntry writeStream.`
 
 ````
+"Construction of the XML document"
 doc := XMLDocument new.
-stream := 'MyXml.xml' asFileEntry writeStream. "specify the stream"
-writer := XMLWriter on: stream. "specify the writer"
-writer initialize.
- 
 "Code below describes how you could write an xml element with a tag "
 elmt := XMLElement named: 'user' attributes: Dictionary new.
  
@@ -27,8 +68,12 @@ elmt := XMLElement named: 'user' attributes: Dictionary new.
 childElmt := XMLElement named: 'name' attributes: Dictionary new.
 childElmt addContent: (XMLStringNode string: ('rao')). "adding a tag called Name with the value 'rao'"
 elmt addElement: childElmt.
- 
 doc addElement: elmt.
+
+"Writing the XML document"
+stream := 'MyXml.xml' asFileEntry writeStream. "specify the stream"
+writer := XMLWriter on: stream. "specify the writer"
+writer initialize.
 doc printXMLOn: writer.
 stream close.
 ````
