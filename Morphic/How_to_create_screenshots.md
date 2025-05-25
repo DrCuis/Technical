@@ -9,7 +9,7 @@ File in the code below. It creates a button on the topleft corner of the screen.
 
 If you save this as a file, you can select it in the FileList and right-click->"workspace with contents" 
 
-````
+```smalltalk
 "Small, invisible area acts as button
  to save consecutive screenshots"
 
@@ -39,6 +39,6 @@ clickArea color: Color transparent;
 			clickArea inform: fileName. "Show user newly saved file name"
 		] fork. "Asynchronous; Code waits while user adjusts menu or whatever"
 	].
-````
+```
 
 Source: https://lists.cuis.st/mailman/archives/cuis-dev/2025-May/010939.html
